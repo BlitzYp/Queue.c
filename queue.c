@@ -5,7 +5,7 @@
 typedef struct node
 {
     char *value;
-    struct node_t *next;
+    struct node *next;
 } node_t;
 
 typedef struct queue
@@ -19,6 +19,7 @@ void enqueue(queue_t *queue, char *value);
 void dequeue(queue_t *queue);
 char *peek(queue_t *queue);
 queue_t createQueue();
+void destroyQueue();
 
 int main(void)
 {
@@ -30,14 +31,20 @@ int main(void)
     dequeue(&queue);
     char *res = peek(&queue);
     printf("%s\n", res);
-    free(queue.last->value);
-    free(queue.last);
+    destroyQueue(&queue);
 }
 
 queue_t createQueue()
 {
     queue_t queue = {NULL, NULL, 0};
     return queue;
+}
+
+void destroyQueue(queue_t* queue) 
+{
+  free(queue->last->value);
+  free(queue->last);
+  return;
 }
 
 void enqueue(queue_t *queue, char *value)
@@ -63,10 +70,14 @@ void dequeue(queue_t *queue)
     {
         free(queue->first->value);
         free(queue->first);
+        queue->length = -1;
         return;
     }
     queue->length--;
+    node_t *toGo = queue->first;
+    free(toGo->value);
     queue->first = queue->first->next;
+    free(toGo);
     return;
 }
 
