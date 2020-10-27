@@ -18,33 +18,34 @@ typedef struct queue
 void enqueue(queue_t *queue, char *value);
 void dequeue(queue_t *queue);
 char *peek(queue_t *queue);
-queue_t createQueue();
+queue_t *createQueue();
 void destroyQueue();
 
 int main(void)
 {
-    queue_t queue = createQueue();
-    enqueue(&queue, "John");
-    enqueue(&queue, "Bob");
-    enqueue(&queue, "Bob2");
-    dequeue(&queue);
-    dequeue(&queue);
-    char *res = peek(&queue);
+    queue_t *queue = createQueue();
+    enqueue(queue, "John");
+    enqueue(queue, "Bob");
+    enqueue(queue, "Bob2");
+    dequeue(queue);
+    dequeue(queue);
+    char *res = peek(queue);
     printf("%s\n", res);
-    destroyQueue(&queue);
+    destroyQueue(queue);
 }
 
-queue_t createQueue()
+queue_t *createQueue()
 {
-    queue_t queue = {NULL, NULL, 0};
+    queue_t *queue = malloc(sizeof(queue_t));
     return queue;
 }
 
-void destroyQueue(queue_t* queue) 
+void destroyQueue(queue_t *queue)
 {
-  free(queue->last->value);
-  free(queue->last);
-  return;
+    free(queue->last->value);
+    free(queue->last);
+    free(queue);
+    return;
 }
 
 void enqueue(queue_t *queue, char *value)
