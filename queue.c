@@ -19,7 +19,7 @@ void enqueue(queue_t *queue, char *value);
 void dequeue(queue_t *queue);
 char *peek(queue_t *queue);
 queue_t *createQueue();
-void destroyQueue();
+void destroyQueue(queue_t *);
 
 int main(void)
 {
@@ -28,10 +28,10 @@ int main(void)
     enqueue(queue, "Bob");
     enqueue(queue, "Bob2");
     dequeue(queue);
-    dequeue(queue);
     char *res = peek(queue);
     printf("%s\n", res);
     destroyQueue(queue);
+    dequeue(queue);
 }
 
 queue_t *createQueue()
@@ -42,8 +42,12 @@ queue_t *createQueue()
 
 void destroyQueue(queue_t *queue)
 {
-    free(queue->last->value);
-    free(queue->last);
+    for (node_t *current = queue->first, *next = NULL; current; current = next)
+    {
+        next = current->next;
+        free(current->value);
+        free(current);
+    }
     free(queue);
     return;
 }
@@ -67,7 +71,7 @@ void enqueue(queue_t *queue, char *value)
 
 void dequeue(queue_t *queue)
 {
-    if (queue->length == 0)
+    if (!queue->length)
     {
         free(queue->first->value);
         free(queue->first);
